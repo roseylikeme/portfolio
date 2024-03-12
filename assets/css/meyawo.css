@@ -11888,7 +11888,7 @@ pre .code {
   }
 }
 
-@media (max-width: 991.98px) {
+@media (max-width: 768px) {
   .custom-navbar .hamburger {
     margin-left: auto;
   }
@@ -11918,14 +11918,14 @@ pre .code {
   }
 }
 
-@media (max-width: 991.98px) and (prefers-reduced-motion: reduce) {
+@media (max-width: 768px) and (prefers-reduced-motion: reduce) {
   .custom-navbar .nav {
     -webkit-transition: none;
     transition: none;
   }
 }
 
-@media (max-width: 991.98px) {
+@media (max-width: 768px) {
   .custom-navbar .nav.show {
     opacity: 1;
     visibility: visible;
