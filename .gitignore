@@ -1,0 +1,12 @@
+node_modules/
+.next/
+out/
+build/
+.DS_Store
+.env*.local
+.vercel
+next-env.d.ts
+*.tsbuildinfo
+
+# personal career documents — never commit
+_private/

@@ -1,0 +1,178 @@
+@import "tailwindcss";
+
+/*
+ * Palette carried over from the original site's header gradient:
+ *   linear-gradient(to top, #fff, #FBE792 25%, #FF7F7F 50%, #0038A8 100%)
+ * Those are Philippine flag colors. 
+ */
+@theme {
+  --color-ph-blue: #0038a8;
+  --color-ph-blue-deep: #002d87;
+  --color-ph-red: #ff7f7f;
+  --color-ph-red-deep: #d94f4f;
+  --color-ph-yellow: #fbe792;
+  --color-ph-yellow-deep: #b8891a;
+
+  --font-display: var(--font-baloo), system-ui, sans-serif;
+  --font-sans: var(--font-open-sans), system-ui, sans-serif;
+}
+
+:root {
+  --bg: #fbfaf9;
+  --bg-raised: #ffffff;
+  --bg-sunken: #f4f2f0;
+  --fg: #1a1a1c;
+  --fg-muted: #55555c;
+  /* 5.06:1 on --bg and 4.72:1 on --bg-sunken. The lighter #75757e this started
+     as measured 4.38:1, under the 4.5 that small text needs. */
+  --fg-subtle: #6b6b74;
+  --border: #e5e2df;
+  --accent: #0038a8;
+  --accent-fg: #ffffff;
+  --ring: #0038a8;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0e0e11;
+    --bg-raised: #17171b;
+    --bg-sunken: #121215;
+    --fg: #f2f1ef;
+    --fg-muted: #a8a7b0;
+    --fg-subtle: #85848e;
+    --border: #2a2a31;
+    --accent: #7ba3ff;
+    --accent-fg: #0e0e11;
+    --ring: #7ba3ff;
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 4rem;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+
+  /* Visible focus for keyboard users on every interactive element.
+     The old site had none — this is table stakes for an engineering portfolio. */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer utilities {
+  .surface {
+    background-color: var(--bg-raised);
+    border: 1px solid var(--border);
+  }
+
+  .text-muted {
+    color: var(--fg-muted);
+  }
+
+  .text-subtle {
+    color: var(--fg-subtle);
+  }
+
+  /* The signature gradient, used as a band rather than a background. */
+  .gradient-band {
+    background-image: linear-gradient(
+      to right,
+      var(--color-ph-blue),
+      var(--color-ph-red) 55%,
+      var(--color-ph-yellow)
+    );
+  }
+
+  .gradient-text {
+    background-image: linear-gradient(
+      100deg,
+      var(--color-ph-blue),
+      var(--color-ph-red-deep) 60%,
+      var(--color-ph-yellow-deep)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .gradient-text {
+      background-image: linear-gradient(
+        100deg,
+        #7ba3ff,
+        var(--color-ph-red) 60%,
+        var(--color-ph-yellow)
+      );
+    }
+  }
+
+  /* Soft gradient wash behind the hero only, well below text contrast range. */
+  .hero-wash {
+    background-image: radial-gradient(
+        ellipse 80% 60% at 15% 0%,
+        color-mix(in oklab, var(--color-ph-blue) 22%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 70% 55% at 85% 15%,
+        color-mix(in oklab, var(--color-ph-red) 24%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 60% 50% at 50% 100%,
+        color-mix(in oklab, var(--color-ph-yellow) 26%, transparent),
+        transparent 70%
+      );
+  }
+}
+
+/* Typing caret for the greeting. Disabled under reduced motion by the rule above. */
+@keyframes caret-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.caret {
+  animation: caret-blink 1s step-end infinite;
+}
