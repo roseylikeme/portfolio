@@ -3,7 +3,13 @@ import { Bold } from "@/components/Bold";
 import { Nav } from "@/components/Nav";
 import { Section } from "@/components/Section";
 import { TypedGreeting } from "@/components/TypedGreeting";
-import { earlierRoles, education, experience } from "@/content/experience";
+import {
+  earlierRoles,
+  education,
+  experience,
+  type Role,
+  type RoleIcon,
+} from "@/content/experience";
 import { profile } from "@/content/profile";
 import { testimonials } from "@/content/testimonials";
 import { lanes, smallerWork, type Lane, type WorkItem } from "@/content/work";
@@ -113,9 +119,7 @@ function Work() {
           The same job, in four different rooms
         </h2>
         <p className="mt-4 max-w-2xl text-muted">
-          A hospital contracts office, a county elections program, a big tech
-          marketing org, and a federal bank. Grouped below by the kind of
-          thinking each one took, rather than by job title.
+          A hospital contracts office, a county elections program, big tech, and a federal bank. Wherever I go, I analyze the work, find the bottlenecks, and build tools to make it better. Here are some of the things I've built.
         </p>
 
         <div className="mt-14 space-y-16">
@@ -297,71 +301,163 @@ function WorkCard({ item }: { item: WorkItem }) {
 
 /* ---------------------------------------------------------- experience ---- */
 
+/* Placeholder marks, one per room — a real logo can replace any of these
+   without touching the layout. Stroke-based on a 24px grid so they scale and
+   recolour with the tile. */
+const glyphs: Record<RoleIcon | "cap", React.ReactNode> = {
+  bank: (
+    <>
+      <path d="M3 9 12 4l9 5" />
+      <path d="M5.5 9.5v8" />
+      <path d="M10 9.5v8" />
+      <path d="M14 9.5v8" />
+      <path d="M18.5 9.5v8" />
+      <path d="M3 20h18" />
+    </>
+  ),
+  ballot: (
+    <>
+      <rect x="3.5" y="10.5" width="17" height="9.5" rx="1.6" />
+      <path d="M8 10.5V4.5h8v6" />
+      <path d="m10.2 7.3 1.5 1.5 2.9-3" />
+    </>
+  ),
+  robot: (
+    <>
+      <rect x="4" y="8" width="16" height="12" rx="3.2" />
+      <path d="M12 4.8V8" />
+      <circle cx="12" cy="3.7" r="1.1" />
+      <circle cx="9.2" cy="13" r="1" />
+      <circle cx="14.8" cy="13" r="1" />
+      <path d="M9.6 16.6h4.8" />
+    </>
+  ),
+  network: (
+    <>
+      <circle cx="5.6" cy="17" r="2.3" />
+      <circle cx="12" cy="6" r="2.3" />
+      <circle cx="18.4" cy="17" r="2.3" />
+      <path d="M7.3 15.3 10.7 8" />
+      <path d="M13.3 8l3.4 7.3" />
+      <path d="M7.9 17h8.2" />
+    </>
+  ),
+  records: (
+    <>
+      <path d="M8 3.5h5.5L18 8v10.5A1.5 1.5 0 0 1 16.5 20h-8.5A1.5 1.5 0 0 1 6.5 18.5V5A1.5 1.5 0 0 1 8 3.5z" />
+      <path d="M13.5 3.5V8H18" />
+      <path d="M9.5 12.5h5" />
+      <path d="M9.5 15.8h3.5" />
+    </>
+  ),
+  cap: (
+    <>
+      <path d="M12 4 2.5 8.5 12 13l9.5-4.5L12 4z" />
+      <path d="M6.8 10.9V16c0 1.4 2.3 2.6 5.2 2.6s5.2-1.2 5.2-2.6v-5.1" />
+      <path d="M21.5 8.5v5" />
+    </>
+  ),
+};
+
+function Glyph({ name }: { name: RoleIcon | "cap" }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.6}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className="size-5 sm:size-6"
+    >
+      {glyphs[name]}
+    </svg>
+  );
+}
+
 function Experience() {
   return (
     <Section
       id="experience"
       eyebrow="Experience"
       title="Where I've been (Building Range)"
+      lede="Five rooms, one job. Newest first — open any role for the detail."
     >
-      <div className="space-y-10">
-        {experience.map((role) => (
-          <article key={role.company}>
-            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-              <h3 className="text-lg font-semibold">
-                {role.title} ·{" "}
-                <span className="gradient-text">{role.company}</span>
-              </h3>
-              <p className="text-sm text-subtle">
-                {role.period} · {role.location}
-              </p>
-            </div>
-            <p className="mt-2 max-w-2xl text-muted">{role.summary}</p>
-            <ul className="mt-3 max-w-2xl space-y-2">
-              {role.bullets.map((bullet) => (
-                <li
-                  key={bullet}
-                  className="relative pl-5 text-sm text-muted before:absolute before:left-0 before:top-[0.6em] before:size-1.5 before:rounded-full before:bg-[var(--fg-subtle)]"
-                >
-                  {bullet}
-                </li>
-              ))}
-            </ul>
-            {role.seeAlso && (
-              <a
-                href={role.seeAlso.href}
-                className="mt-3 inline-block text-sm font-semibold text-[var(--accent)] underline-offset-4 hover:underline"
-              >
-                {role.seeAlso.label} →
-              </a>
-            )}
-          </article>
-        ))}
+      <div className="relative">
+        {/* The rail, in two layers: a static track, and the signature gradient
+            filling it as you scroll (see .xp-fill in globals.css). Decorative,
+            so both stay out of the accessibility tree. */}
+        <div
+          aria-hidden="true"
+          className="absolute bottom-0 left-[19px] top-2 w-0.5 rounded-full bg-[var(--border)] sm:left-[27px]"
+        />
+        <div
+          aria-hidden="true"
+          className="xp-fill gradient-band-y absolute bottom-0 left-[19px] top-2 w-0.5 origin-top rounded-full sm:left-[27px]"
+        />
+
+        <ol className="pl-14 sm:pl-[92px]">
+          {experience.map((role) => (
+            <TimelineNode key={role.company} role={role} />
+          ))}
+
+          <li className="xp-node relative">
+            <span
+              aria-hidden="true"
+              className="absolute -left-14 top-1.5 flex size-10 items-center justify-center sm:-left-[92px] sm:size-14"
+            >
+              <span className="size-3.5 rounded-full border-2 border-dashed border-[var(--fg-subtle)] bg-[var(--bg)]" />
+            </span>
+            <p className="max-w-2xl pt-2 text-sm leading-relaxed text-subtle">
+              {earlierRoles}
+            </p>
+          </li>
+        </ol>
       </div>
 
-      <p className="mt-10 max-w-2xl border-l-2 border-[var(--border)] pl-5 text-sm text-subtle">
-        {earlierRoles}
-      </p>
+      {/* Education terminates the line rather than trailing off beneath it, so
+          the section closes where the story started. */}
+      <div className="xp-node relative mt-11 pl-14 sm:pl-[92px]">
+        <div
+          aria-hidden="true"
+          className="absolute -top-11 left-[19px] h-16 w-0.5 rounded-full bg-[var(--border)] sm:left-[27px] sm:h-18"
+        />
+        <div
+          aria-hidden="true"
+          className="xp-fill absolute -top-11 left-[19px] h-16 w-0.5 origin-top rounded-full bg-[var(--color-ph-yellow)] sm:left-[27px] sm:h-18"
+        />
+        <span
+          aria-hidden="true"
+          className="absolute left-0 top-0 flex size-10 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--bg-sunken)] text-muted sm:size-14 sm:rounded-2xl"
+        >
+          <Glyph name="cap" />
+        </span>
 
-      <div className="mt-14 border-t border-[var(--border)] pt-8">
-        <h3 className="text-lg font-semibold">
-          {education.degree} ·{" "}
-          <span className="gradient-text">{education.school}</span>
-        </h3>
-        <p className="mt-1 text-sm text-subtle">
-          {education.period} · {education.location}
-        </p>
-        <p className="mt-2 max-w-2xl text-muted">{education.note}</p>
-        <ul className="mt-4 flex flex-wrap gap-2">
-          {profile.certifications.map((cert) => (
-            <li
-              key={cert}
-              className="rounded-full border border-[var(--border)] px-3 py-1 text-xs font-medium text-muted"
-            >
-              {cert}
-            </li>
-          ))}
-        </ul>
+        <div className="border-t-2 border-[var(--fg)] pt-4">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-5 gap-y-1">
+            <h3 className="font-display text-xl font-bold">
+              <span className="gradient-text">{education.school}</span>
+            </h3>
+            <p className="text-sm text-subtle">
+              {education.period} · {education.location}
+            </p>
+          </div>
+          <p className="mt-0.5 text-sm font-semibold text-muted">
+            {education.degree}
+          </p>
+          <p className="mt-3 max-w-2xl text-muted">{education.note}</p>
+          <ul className="mt-4 flex flex-wrap gap-2">
+            {profile.certifications.map((cert) => (
+              <li
+                key={cert}
+                className="rounded-full border border-[var(--border)] px-3 py-1 text-xs font-medium text-muted"
+              >
+                {cert}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
 
       <div className="mt-14 grid gap-8 sm:grid-cols-3">
@@ -381,6 +477,102 @@ function Experience() {
         ))}
       </div>
     </Section>
+  );
+}
+
+/* One node on the rail. Bullets sit behind a disclosure so the section reads
+   short — the summary and the one number carry the skim, the detail is a click
+   away. The current role opens by default. */
+function TimelineNode({ role }: { role: Role }) {
+  const current = role.period.includes("present");
+
+  return (
+    <li className="xp-node relative pb-9">
+      <span
+        aria-hidden="true"
+        className={`absolute -left-14 top-1 flex size-10 items-center justify-center rounded-xl sm:-left-[92px] sm:size-14 sm:rounded-2xl ${
+          current
+            ? "border border-[var(--accent)] bg-[var(--accent)] text-[var(--accent-fg)]"
+            : "surface text-muted"
+        }`}
+      >
+        <Glyph name={role.icon} />
+      </span>
+
+      <article className="surface rounded-2xl p-4 transition-[transform,border-color] duration-200 hover:border-[var(--fg-subtle)] hover:sm:translate-x-1 sm:p-6">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-5 gap-y-1">
+          <div className="flex items-center gap-2.5">
+            <h3 className="font-display text-xl font-bold">{role.company}</h3>
+            {current && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--bg-sunken)] px-2.5 py-0.5 text-[11px] font-semibold text-muted">
+                <span
+                  aria-hidden="true"
+                  className="size-1.5 rounded-full bg-emerald-500"
+                />
+                Current
+              </span>
+            )}
+          </div>
+          <p className="text-sm text-subtle">
+            {role.period} · {role.location}
+          </p>
+        </div>
+
+        <p className="mt-0.5 text-sm font-semibold text-muted">{role.title}</p>
+        <p className="mt-3 max-w-2xl text-muted">{role.summary}</p>
+
+        {(role.highlight || role.seeAlso) && (
+          <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
+            {role.highlight && (
+              <span className="rounded-full bg-[var(--bg-sunken)] px-3 py-1 text-xs font-semibold text-muted">
+                {role.highlight}
+              </span>
+            )}
+            {role.seeAlso && (
+              <a
+                href={role.seeAlso.href}
+                className="text-sm font-semibold text-[var(--accent)] underline-offset-4 hover:underline"
+              >
+                {role.seeAlso.label} →
+              </a>
+            )}
+          </div>
+        )}
+
+        <details
+          open={current}
+          className="group xp-details mt-4 border-t border-[var(--border)] pt-4"
+        >
+          <summary className="flex cursor-pointer list-none items-center gap-1.5 text-sm font-semibold text-[var(--accent)] underline-offset-4 hover:underline">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2.5}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+              className="transition-transform duration-200 group-open:rotate-90"
+            >
+              <path d="m9 6 6 6-6 6" />
+            </svg>
+            What I did
+          </summary>
+          <ul className="mt-4 max-w-2xl space-y-2">
+            {role.bullets.map((bullet) => (
+              <li
+                key={bullet}
+                className="relative pl-5 text-sm text-muted before:absolute before:left-0 before:top-[0.6em] before:size-1.5 before:rounded-full before:bg-[var(--fg-subtle)]"
+              >
+                {bullet}
+              </li>
+            ))}
+          </ul>
+        </details>
+      </article>
+    </li>
   );
 }
 

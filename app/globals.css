@@ -141,6 +141,26 @@
     }
   }
 
+  .gradient-band-y {
+    background-image: linear-gradient(
+      to bottom,
+      var(--color-ph-blue),
+      var(--color-ph-red) 55%,
+      var(--color-ph-yellow)
+    );
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .gradient-band-y {
+      background-image: linear-gradient(
+        to bottom,
+        #7ba3ff,
+        var(--color-ph-red) 55%,
+        var(--color-ph-yellow)
+      );
+    }
+  }
+
   /* Soft gradient wash behind the hero only, well below text contrast range. */
   .hero-wash {
     background-image: radial-gradient(
@@ -175,4 +195,76 @@
 
 .caret {
   animation: caret-blink 1s step-end infinite;
+}
+
+/* ------------------------------------------------ experience timeline ---- */
+
+/* The rail fills with the signature gradient as you scroll past it, and each
+   role rises in as it enters. Both are scroll-driven, so the section stays a
+   server component: no JS, no hydration, no observer. Browsers without
+   animation-timeline (Firefox, older Safari) never enter the @supports block
+   and get the finished state — filled rail, visible roles — which is a fine
+   place to land. */
+@keyframes xp-fill {
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes xp-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .xp-fill {
+      transform: scaleY(0);
+      animation-name: xp-fill;
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      /* Stops short of `cover 100%` so the rail reads as full by the time the
+         last card is on screen, rather than only once it has scrolled off. */
+      animation-range: cover 0% cover 72%;
+    }
+
+    .xp-node {
+      animation-name: xp-rise;
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: entry 10% entry 60%;
+    }
+  }
+}
+
+/* Opening a role fades its bullets in. An earlier attempt animated
+   ::details-content's block-size to `auto`, which looked right on paper but
+   left content-visibility stuck at `hidden` — the panel never opened at all.
+   Animating the revealed content instead is unbreakable: the disclosure is
+   plain native <details>, and this is decoration on top. */
+@keyframes xp-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .xp-details[open] > ul {
+    animation: xp-reveal 0.28s ease-out;
+  }
 }

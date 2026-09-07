@@ -2,12 +2,14 @@ export function Section({
   id,
   eyebrow,
   title,
+  lede,
   children,
   className = "",
 }: {
   id: string;
   eyebrow?: string;
   title?: string;
+  lede?: string;
   children: React.ReactNode;
   className?: string;
 }) {
@@ -17,7 +19,7 @@ export function Section({
       aria-labelledby={title ? `${id}-heading` : undefined}
       className={`mx-auto max-w-5xl px-5 py-16 sm:py-20 ${className}`}
     >
-      {(eyebrow || title) && (
+      {(eyebrow || title || lede) && (
         <div className="mb-10">
           {eyebrow && (
             <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-subtle">
@@ -32,6 +34,7 @@ export function Section({
               {title}
             </h2>
           )}
+          {lede && <p className="mt-4 max-w-2xl text-muted">{lede}</p>}
         </div>
       )}
       {children}

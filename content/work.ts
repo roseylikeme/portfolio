@@ -49,7 +49,7 @@ export const lanes: Lane[] = [
     id: "build",
     label: "Build",
     thesis:
-      "I like building products and solutions. Helping marketers self-serve their campaigns @ LinkedIn, cutting manual effort through automation @ Federal Reserve Bank of San Francisco, and full products from concept to launch.",
+      "I like building products and solutions.",
     items: [
       {
         slug: "resume-fit-assistant",
@@ -63,27 +63,23 @@ export const lanes: Lane[] = [
           src: "/shots/resume-fit-assistant.png",
           alt: "Resume Fit Assistant: a résumé editor on the left, a job posting on the right, and a match score with a breakdown of missing keywords.",
           width: 1600,
-          height: 1000,
+          height: 1500,
         },
         results: ["403 commits", "219 test files", "+1,281% skill coverage", "PRD → production"],
         featured: true,
         notes: [
           {
             label: "Problem",
-            body: "Job seekers either hand-tailor a résumé for every application or don't tailor at all and lose to keyword filters. The tools that promise to fix this do one of two harmful things: they invent experience the candidate doesn't have, which becomes a real problem in an interview or a background check, or they auto-submit applications with no meaningful human review.",
+            body: "Job seekers are juggling multiple résumé versions, each with different keywords, and they don't know which one is the best fit for a given posting.",
           },
           {
             label: "Decision",
-            body: "I wrote the non-goals before the features. It never auto-submits — permanently, not “deferred.” It never generates a résumé claim that isn't in the source résumé. Autofill exists, but only behind an explicit per-use click, never chained into a submit. Those three lines shaped every design decision downstream, and I turned down otherwise-obvious features that would have broken them.",
+            body: "I wanted to build a tool that not only finds the best résumé version for a posting, but also explains why it's the best fit and what keywords are missing. I decided to build a web app and a Chrome extension that work together to capture postings, parse them, and score résumés against them.",
           },
           {
             label: "Build",
-            body: "A pnpm monorepo: a Next.js app and a Chrome MV3 extension sharing seven workspace packages over Prisma/Postgres. The hard part wasn't the LLM calls — it was making extraction trustworthy across ATSs that don't agree on anything. Detecting when a posting was published, for instance, needed a four-rung ladder (JSON-LD → a <time> element with posting context → an absolute date in the body → a relative phrase like “Posted 3 days ago”), recording which rung answered, because an approximate date must never overwrite an exact one on re-capture.",
-          },
-          {
-            label: "Outcome",
-            body: "403 commits, ~74k lines of TypeScript, 219 test files. The full loop works end to end: capture a posting, parse it into must-have and nice-to-have requirements, score every résumé version with an explainable breakdown, see exactly which keywords are missing, edit, and export to PDF or DOCX. Seeding the skills taxonomy from O*NET improved skill coverage by 1,281%.",
-          },
+            body: "I built the tool in TypeScript, using Next.js for the web app and Chrome MV3 for the extension. I used Prisma and Postgres for the backend, and Vitest for testing. I also used LLM extraction to parse job postings into structured data.",
+          }
         ],
         stack: [
           "TypeScript",
