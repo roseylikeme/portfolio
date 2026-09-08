@@ -4,7 +4,7 @@ export const profile = {
 
   headline: "Huge Generalist and lover of many hats: I build and improve products, processes, and data.",
   subhead:
-    "MIS senior at San José State, building AI automation solutions at the Federal Reserve. Previous SWE Intern at LinkedIn. Lover of ice cream and sushi!",
+    "MIS senior at San José State: building AI automation solutions at the Federal Reserve. Previous SWE Intern at LinkedIn. Lover of ice cream and sushi!",
 
   availability: "Graduating May/Dec 2027 · open to 2027 internships and new-grad roles",
 
@@ -23,7 +23,7 @@ export const profile = {
   links: {
     github: "https://github.com/roseylikeme",
     linkedin: "https://www.linkedin.com/in/roselene-g/",
-    resume: "/resume.pdf", // TODO(rose): drop the current PDF at public/resume.pdf
+    resume: "/resume.pdf", 
   },
 
   greetings: [
