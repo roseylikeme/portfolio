@@ -101,7 +101,7 @@ export const education = {
   degree: "BS, Management Information Systems (Business Administration)",
   period: "Expected May/Dec 2027",
   location: "San José, CA",
-  note: "Why MIS? To position myself at the interection of emerging business and technology.",
+  note: "Why MIS? To position myself at the intersection of emerging business and technology.",
 };
 
 export const earlierRoles =

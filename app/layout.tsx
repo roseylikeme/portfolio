@@ -16,8 +16,7 @@ const openSans = Open_Sans({
   display: "swap",
 });
 
-// TODO(rose): set this to your real domain once Vercel is connected.
-export const siteUrl = "https://roselene.vercel.app";
+export const siteUrl = "https://roselene-portfolio.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
