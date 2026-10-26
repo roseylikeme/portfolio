@@ -1,12 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ThemeToggle } from "./ThemeToggle";
 
 const links = [
   { href: "#now", label: "Now" },
   { href: "#work", label: "Work" },
+  { href: "#create", label: "Create" },
   { href: "#experience", label: "Experience" },
-  // { href: "#about", label: "About" },
+  { href: "#toolbox", label: "Skills" },
+  { href: "#testimonials", label: "Testimonials" },
   { href: "#contact", label: "Contact" },
 ];
 
@@ -35,7 +38,7 @@ export function Nav() {
           Roselene<span className="gradient-text"> Gabun</span>
         </a>
 
-        <ul className="hidden items-center gap-7 md:flex">
+        <ul className="hidden items-center gap-6 md:ml-auto md:mr-5 md:flex">
           {links.map((link) => (
             <li key={link.href}>
               <a
@@ -48,39 +51,46 @@ export function Nav() {
           ))}
         </ul>
 
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          aria-controls="mobile-menu"
-          className="-mr-2 rounded p-2 md:hidden"
-        >
-          <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            aria-hidden="true"
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-controls="mobile-menu"
+            className="-mr-2 rounded p-2 md:hidden"
           >
-            {open ? (
-              <>
-                <path d="M18 6 6 18" />
-                <path d="m6 6 12 12" />
-              </>
-            ) : (
-              <>
-                <path d="M3 7h18" />
-                <path d="M3 12h18" />
-                <path d="M3 17h18" />
-              </>
-            )}
-          </svg>
-        </button>
+            <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              aria-hidden="true"
+            >
+              {open ? (
+                <>
+                  <path d="M18 6 6 18" />
+                  <path d="m6 6 12 12" />
+                </>
+              ) : (
+                <>
+                  <path d="M3 7h18" />
+                  <path d="M3 12h18" />
+                  <path d="M3 17h18" />
+                </>
+              )}
+            </svg>
+          </button>
+        </div>
       </nav>
+      <div
+        aria-hidden="true"
+        className="scroll-progress gradient-band absolute inset-x-0 -bottom-px h-0.5"
+      />
 
       {open && (
         <ul
