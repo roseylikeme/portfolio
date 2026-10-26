@@ -2,22 +2,66 @@ export const profile = {
   name: "Roselene Gabun",
   shortName: "Rose",
 
-  headline: "Huge Generalist and lover of many hats: I build and improve products, processes, and data.",
+  headline: "I build and improve products, processes, and data.",
   subhead:
-    "MIS senior at San José State: building AI automation solutions at the Federal Reserve. Previous SWE Intern at LinkedIn. Lover of ice cream and sushi!",
+    "Building AI automation solutions at the Federal Reserve. Previous SWE Intern at LinkedIn. Huge generalist.",
+
+  /** How I describe myself — the hero leads with these. */
+  traits: [{ word: "Technical" }, { word: "Creative" }, { word: "Analytical" }],
+
+  /** The numbers strip under the hero. Each is backed by a card further down. */
+  stats: [
+    { value: 93, prefix: "", suffix: "K+", label: "YouTube views on my tutorials" },
+    { value: 30, prefix: "", suffix: "+", label: "colleagues trained on AI at the Fed" },
+    { value: 67, prefix: "−", suffix: "%", label: "support calls after my knowledge base" },
+    { value: 5000, prefix: "", suffix: "+", label: "contracts migrated off paper" },
+  ],
 
   availability: "Graduating May/Dec 2027 · open to 2027 internships and new-grad roles",
+  /** The footer's shorter version — the hero already says when I graduate. */
+  openTo: "Open to 2027 internships and new-grad roles",
 
-  now: {
-    updated: "August 2026",
-    lines: [
-      "At the **Federal Reserve Bank of San Francisco**, building a hybrid AI + Excel VBA tool that turns Steering Committee decks into strictly formatted executive summaries — and training colleagues on AI tools.",
-      "Shipping **Resume Fit Assistant** — a job-search tool that scores your résumé against a real posting and tells you what's missing, without ever inventing experience you don't have.",
-      "Finishing a **BS in Management Information Systems** at SJSU.",
-      "Using **AI to help analyze market trends** and build a scoring system for investment opportunities",
-      "**Language Learning** on my downtime! Currently learning Chinese(Mandarin)",
-    ],
-  },
+  /** The "Now" cards. The month on the section is the visitor's current one
+      (see CurrentMonth), so keep these true rather than dated. */
+  now: [
+    {
+      kicker: "Day job",
+      title: "AI automation at the Fed",
+      body: "Building a hybrid AI + Excel VBA tool that turns Steering Committee decks into strictly formatted executive summaries — and training colleagues on AI tools.",
+      where: "Federal Reserve Bank of San Francisco",
+      graphic: "deck-to-email",
+      href: "#automate",
+    },
+    {
+      kicker: "Shipping",
+      title: "Resume Fit Assistant",
+      body: "Scores your résumé against a real posting and tells you what's missing — without ever inventing experience you don't have.",
+      where: "Solo build",
+      graphic: "resume-fit",
+      href: "#build",
+    },
+    {
+      kicker: "Exploring",
+      title: "AI for market trends",
+      body: "Using AI to help analyze market trends and build a scoring system for investment opportunities.",
+      where: "Side project",
+      graphic: "trend",
+    },
+    {
+      kicker: "Studying",
+      title: "BS, Management Information Systems",
+      body: "Finishing my degree at San José State — business and technology, on purpose.",
+      where: "SJSU · class of 2027",
+      graphic: "degree",
+    },
+    {
+      kicker: "Downtime",
+      title: "Learning Mandarin",
+      body: "Currently learning Chinese — and I built a Chrome extension to make my dictionary lookups faster.",
+      where: "Language learning",
+      graphic: "mandarin",
+    },
+  ],
 
   email: "roselenegabunjobs@gmail.com",
   links: {
@@ -34,53 +78,18 @@ export const profile = {
     { text: "Kamusta?", language: "Tagalog" },
   ],
 
-  skills: [
-    {
-      group: "Build",
-      items: [
-        "TypeScript",
-        "React / Next.js",
-        "Node.js",
-        "Python",
-        "Java",
-        "Prisma / Postgres",
-        "Chrome Extensions (MV3)",
-        "Testing (Vitest)",
-      ],
-    },
-    {
-      group: "Analyze",
-      items: [
-        "SQL",
-        "Python / Pandas",
-        "IBM Cognos",
-        "Power BI / Tableau",
-        "Excel (pivots, VLOOKUP, VBA)",
-        "LLM parsing & structured extraction",
-        "Scoring & ranking systems",
-      ],
-    },
-    {
-      group: "Decide & operate",
-      items: [
-        "PRDs, scoping, and non-goals",
-        "Requirements gathering",
-        "Business process modeling",
-        "Power Automate / SharePoint",
-        "Jira / Confluence · Figma",
-        "IAM, IT general controls, SPII handling",
-      ],
-    },
-  ],
-
   certifications: [
     "Google Cybersecurity Professional Certificate",
     "IBM Business Intelligence Analyst",
     "AI Ethics",
   ],
 
-  lookingFor:
-    "I'm looking for a team that will give me technical problems to solve, and trust me to own the fix. From product, analytics, automation, AI, or engineering — the work is the same work. I want to be on a team that values curiosity, learning, and constant innovation. Ideally one that lets me sit at the intersection of business and technology.",
+  /** Under the closing callout: the ask, the kinds of roles, and the team. */
+  lookingFor: {
+    lead: "I'm looking for a team that will give me technical problems to solve, and trust me to own the fix.",
+    roles: ["Product", "Analytics", "Automation", "Consulting", "Solutions engineering"],
+    team: "Ideally on a team that values curiosity, learning, and constant innovation — at the intersection of business and technology.",
+  },
 } as const;
 
 export type Profile = typeof profile;

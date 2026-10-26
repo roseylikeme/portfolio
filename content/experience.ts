@@ -29,7 +29,7 @@ export const experience: Role[] = [
       "Centralized Cash Contracts and stood up email automation workflows using Power Automate and SharePoint.",
       "Trained and upskilled 30+ cross-functional colleagues on practical AI applications, including prompt engineering and structured extraction.",
     ],
-    seeAlso: { label: "See the build", href: "#work" },
+    seeAlso: { label: "See the automation", href: "#automate" },
   },
   {
     company: "Alameda County",
@@ -105,4 +105,4 @@ export const education = {
 };
 
 export const earlierRoles =
-  "Before that: retail and customer-facing sales roles, plus a stint building the front end for an early-stage artist platform.";
+  "Before that: customer-facing sales — including $200K+ in revenue in three months at Ashley Furniture — plus a stint building the front end for an early-stage artist platform.";

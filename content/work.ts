@@ -11,11 +11,39 @@ export type Visual =
   | {
       kind: "shot";
       src: string;
+      /** Shown instead of src in dark mode, when the project has one. */
+      srcDark?: string;
       alt: string;
       width: number;
       height: number;
+      /** The address shown in the browser frame. */
+      url?: string;
+      /** More screens of the same project — the frame crossfades through them. */
+      more?: { src: string; alt: string; width: number; height: number }[];
     }
-  | { kind: "stat"; value: string; label: string; sub?: string };
+  /** A number drawn as a picture of itself. `chart` picks the drawing:
+      people = one figure per person, drop = before/after bars,
+      grid = a hundred squares flipping from paper to digital. */
+  | {
+      kind: "viz";
+      chart: "people" | "drop" | "grid";
+      value: string;
+      label: string;
+      sub?: string;
+      /** people: how many figures. drop: the "after" bar as % of before. */
+      n?: number;
+    }
+  /** A drawn workflow, for automations that only live behind a login. */
+  | {
+      kind: "flow";
+      steps: string[];
+      /** Where the last step forks: the If node's two outcomes. */
+      branches?: { when: string; label: string }[];
+      label: string;
+      sub?: string;
+      /** A logo from /public/icons, shown beside the label. */
+      icon?: string;
+    };
 
 export type WorkItem = {
   slug: string;
@@ -26,7 +54,9 @@ export type WorkItem = {
   visual: Visual;
   /** One line, on the card face. Everything longer lives behind the disclosure. */
   tagline: string;
-  /** Short outcome chips — numbers first. These carry the card at a skim. */
+  /** The numbers, set large. These carry the card at a skim. */
+  metrics?: { value: string; label: string }[];
+  /** Short qualitative chips. */
   results: string[];
   featured?: boolean;
   /** The full reasoning. Collapsed by default: depth on demand, not by default. */
@@ -61,11 +91,17 @@ export const lanes: Lane[] = [
         visual: {
           kind: "shot",
           src: "/shots/resume-fit-assistant.png",
-          alt: "Resume Fit Assistant: a résumé editor on the left, a job posting on the right, and a match score with a breakdown of missing keywords.",
-          width: 1600,
-          height: 1500,
+          alt: "Resume Fit Assistant dashboard: fields filled, time saved, applications and jobs saved this month, a weekly goal ring, and a streak calendar.",
+          width: 1634,
+          height: 1290,
+          url: "resume-fit-assistant/dashboard",
         },
-        results: ["403 commits", "219 test files", "+1,281% skill coverage", "PRD → production"],
+        metrics: [
+          { value: "403", label: "commits" },
+          { value: "219", label: "test files" },
+          { value: "+1,281%", label: "skill coverage" },
+        ],
+        results: ["PRD → production", "Web app + Chrome extension"],
         featured: true,
         notes: [
           {
@@ -93,6 +129,56 @@ export const lanes: Lane[] = [
         links: [],
       },
       {
+        slug: "poll-worker-table",
+        name: "Poll Worker System data table",
+        where: "Alameda County — Technical Specialist",
+        period: "Jan — Mar 2024",
+        tagline:
+          "A reusable table for the system I was using every day at my county job, built because of poor user experience.",
+        visual: {
+          kind: "shot",
+          src: "/shots/poll-worker-table.jpg",
+          srcDark: "/shots/live/poll-worker-table-dark.jpg",
+          url: "https://shadcn-ui-table.vercel.app",
+          alt: "The Poll Worker System data table: a filter field, column toggle, export button, and a sortable table of poll-worker records.",
+          width: 1600,
+          height: 1000,
+        },
+        results: ["Live demo", "Light + dark mode", "Filter · sort · paginate · hide columns", "Built for a system I used daily"],
+        notes: [
+          {
+            label: "Problem",
+            body: "I was recruiting poll workers out of a system whose tables were painful to work in.",
+          },
+          {
+            label: "What I did",
+            body: "Translated the user and stakeholder needs into a reusable data-table feature — defined the requirements, prioritized what shipped, and documented it. Responsive layout, better pagination, show/hide columns, filtering, and sorting, in TypeScript.",
+          },
+          {
+            label: "Outcome",
+            body: "A documented, reusable component that makes the data actually explorable. It's the clearest case of a pattern I keep repeating: use the thing, notice the friction, then go build the fix.",
+          },
+        ],
+        stack: ["TypeScript", "React", "shadcn/ui"],
+        links: [
+          {
+            label: "Live demo",
+            href: "https://shadcn-ui-table.vercel.app/",
+            primary: true,
+          },
+        ],
+      },
+    ],
+  },
+
+  /* ------------------------------------------------------------- automate -- */
+  {
+    id: "automate",
+    label: "Automate",
+    thesis:
+      "If a task repeats, I'd rather build the thing that does it — then teach the people around me to trust it.",
+    items: [
+      {
         slug: "fed-exec-summaries",
         name: "Deck-to-executive-summary automation",
         where: "Federal Reserve Bank of San Francisco",
@@ -100,12 +186,14 @@ export const lanes: Lane[] = [
         tagline:
           "A hybrid generative-AI and Excel VBA tool that turns Steering Committee decks into strictly formatted executive email summaries.",
         visual: {
-          kind: "stat",
+          kind: "viz",
+          chart: "people",
+          n: 30,
           value: "30+",
-          label: "colleagues trained on AI adoption",
-          sub: "Internal to the Fed — no public screenshot possible",
+          label: "colleagues trained on AI",
+          sub: "Internal tool — no public screenshot possible",
         },
-        results: ["Steering Committee output", "AI drafts, VBA formats", "30+ trained"],
+        results: ["Steering Committee output", "AI drafts, VBA formats"],
         notes: [
           {
             label: "Problem",
@@ -134,42 +222,31 @@ export const lanes: Lane[] = [
         links: [],
       },
       {
-        slug: "poll-worker-table",
-        name: "Poll Worker System data table",
-        where: "Alameda County — Technical Specialist",
-        period: "Jan — Mar 2024",
+        slug: "n8n-expense-claims",
+        name: "Expense claim automation",
+        where: "Personal — n8n Cloud",
+        period: "2026",
         tagline:
-          "A reusable table for the system I was using every day at my county job, built because of poor user experience.",
+          "A 5-node n8n workflow that takes expense claims from a web form, logs every one to Google Sheets, auto-approves anything under $25, and routes the rest to accounting — emailing everyone along the way.",
         visual: {
-          kind: "shot",
-          src: "/shots/poll-worker-table.jpg",
-          alt: "The Poll Worker System data table: a filter field, column toggle, export button, and a sortable table of poll-worker records.",
-          width: 1600,
-          height: 1000,
+          kind: "flow",
+          steps: ["Web form", "Google Sheets", "If < $25"],
+          branches: [
+            { when: "Yes", label: "Auto-approve" },
+            { when: "No", label: "Accounting review" },
+          ],
+          label: "Built in n8n",
+          icon: "n8n",
+          sub: "5 nodes · form to inbox, no hands",
         },
-        results: ["Live demo", "Filter · sort · paginate · hide columns", "Built for a system I used daily"],
-        notes: [
-          {
-            label: "Problem",
-            body: "I was recruiting poll workers out of a system whose tables were painful to work in.",
-          },
-          {
-            label: "What I did",
-            body: "Translated the user and stakeholder needs into a reusable data-table feature — defined the requirements, prioritized what shipped, and documented it. Responsive layout, better pagination, show/hide columns, filtering, and sorting, in TypeScript.",
-          },
-          {
-            label: "Outcome",
-            body: "A documented, reusable component that makes the data actually explorable. It's the clearest case of a pattern I keep repeating: use the thing, notice the friction, then go build the fix.",
-          },
+        metrics: [
+          { value: "5", label: "nodes" },
+          { value: "< $25", label: "auto-approved" },
         ],
-        stack: ["TypeScript", "React", "shadcn/ui"],
-        links: [
-          {
-            label: "Live demo",
-            href: "https://shadcn-ui-table.vercel.app/",
-            primary: true,
-          },
-        ],
+        results: ["Web form intake", "Audit log in Sheets", "Email to both sides"],
+        notes: [],
+        stack: ["n8n Cloud", "Google Sheets", "Gmail API", "Conditional logic"],
+        links: [],
       },
     ],
   },
@@ -179,8 +256,56 @@ export const lanes: Lane[] = [
     id: "analyze",
     label: "Analyze",
     thesis:
-      "Before I build anything I analyze the patterns in the data: What's working? What's not? Why? What are the real problems, and what can I do to remove them? I like to find the friction and remove it.",
+      "Before I build anything I analyze the patterns in the data: What's working? What's not? Why? What are the real problems, and what can I do to remove them?",
     items: [
+      {
+        slug: "tableau-happiness",
+        name: "Happiness, GDP, Freedom, and Health",
+        where: "Tableau Public — data story",
+        period: "2026",
+        tagline:
+          "A five-part Tableau story asking what actually moves a country's happiness score: money, or freedom, social support, generosity, and health.",
+        visual: {
+          kind: "shot",
+          src: "/shots/live/tableau-happiness.jpg",
+          alt: "Tableau story page on the least happy countries: a happiness-score heat table by year, plus dual-axis charts of freedom and social support, and generosity and healthy life expectancy, 2015 to 2024.",
+          width: 1440,
+          height: 860,
+          url: "public.tableau.com/app/profile/rose.gabun",
+          more: [
+            {
+              src: "/shots/live/tableau-happiness-most.jpg",
+              alt: "Tableau story page on the most happy countries: a happiness-score heat table for ten countries from 2015 to 2023, with the Netherlands highlighted, above dual-axis charts of freedom and social support, and generosity and healthy life expectancy.",
+              width: 1440,
+              height: 1268,
+            },
+          ],
+        },
+        metrics: [
+          { value: "5", label: "story chapters" },
+          { value: "10 yrs", label: "of country data" },
+        ],
+        results: ["Most vs. least happy countries", "Published on Tableau Public"],
+        featured: true,
+        notes: [
+          {
+            label: "Question",
+            body: "Does GDP explain why some countries are happier than others — or do freedom, social support, generosity, and healthy life expectancy matter more?",
+          },
+          {
+            label: "Approach",
+            body: "Built it as a story rather than a dashboard: an overview, GDP per capita against happiness score, then the most- and least-happy countries broken out factor by factor across a decade, ending on the inferences.",
+          },
+        ],
+        stack: ["Tableau", "Data storytelling", "Dual-axis charts"],
+        links: [
+          {
+            label: "Explore the story",
+            href: "https://public.tableau.com/app/profile/rose.gabun/viz/MyFinalProjectRose_17879556433010/Story1",
+            primary: true,
+          },
+        ],
+      },
       {
         slug: "alameda-knowledge-base",
         name: "The knowledge base that stopped the calls",
@@ -189,12 +314,18 @@ export const lanes: Lane[] = [
         tagline:
           "Analyzed what people were actually calling about, then removed the reason to call.",
         visual: {
-          kind: "stat",
+          kind: "viz",
+          chart: "drop",
+          n: 33,
           value: "−67%",
           label: "inbound troubleshooting calls",
-          sub: "After the knowledge base shipped",
+          sub: "Before vs. after the knowledge base",
         },
-        results: ["−67% support calls", "160+ workers across 20+ sites", "Onboarding: 3 weeks → 1"],
+        metrics: [
+          { value: "160+", label: "workers, 20+ sites" },
+          { value: "3 → 1 wk", label: "onboarding" },
+        ],
+        results: ["Issue analysis", "SPII gaps closed"],
         notes: [
           {
             label: "Problem",
@@ -220,12 +351,16 @@ export const lanes: Lane[] = [
         tagline:
           "A paper-to-database migration that had to survive an audit, run by the person whose title said nothing about systems.",
         visual: {
-          kind: "stat",
+          kind: "viz",
+          chart: "grid",
           value: "5,000+",
           label: "contracts moved off paper",
-          sub: "−40% processing time, audit trail intact",
+          sub: "Each square ≈ 50 contracts",
         },
-        results: ["−40% processing time", "Audit traceability preserved", "15+ inquiries a day"],
+        metrics: [
+          { value: "−40%", label: "processing time" },
+        ],
+        results: ["Audit trail intact", "15+ inquiries a day"],
         notes: [
           {
             label: "Problem",
@@ -252,6 +387,10 @@ export type SmallItem = {
   name: string;
   note: string;
   href: string;
+  /** A running version, when there is one. */
+  live?: string;
+  /** A recorded walkthrough. */
+  demo?: string;
   year: string;
   shot?: { src: string; alt: string; width: number; height: number };
 };
@@ -261,6 +400,8 @@ export const smallerWork: SmallItem[] = [
     name: "Code Rare",
     note: "CRUD social platform for engineers, with a REST API behind it",
     href: "https://github.com/roseylikeme/code-rare",
+    live: "https://roseylikeme.github.io/code-rare/",
+    demo: "https://www.youtube.com/watch?v=jUVr62vpyL0",
     year: "2023",
     shot: {
       src: "/shots/code-rare.jpg",
@@ -273,6 +414,7 @@ export const smallerWork: SmallItem[] = [
     name: "The Rose Project: Weather",
     note: "City weather lookup against the US government's REST API",
     href: "https://github.com/roseylikeme/weather-api",
+    live: "https://roseylikeme.github.io/weather-api",
     year: "2023",
     shot: {
       src: "/shots/weather.jpg",
@@ -285,6 +427,7 @@ export const smallerWork: SmallItem[] = [
     name: "ABC Toys",
     note: "Responsive storefront front end — my first real layout build",
     href: "https://github.com/roseylikeme/abc-toys",
+    live: "https://roseylikeme.github.io/abc-toys/",
     year: "2022",
     shot: {
       src: "/shots/abc-toys.jpg",
@@ -298,6 +441,12 @@ export const smallerWork: SmallItem[] = [
     note: "Right-click any Chinese text to jump straight to its dictionary entry — a 6-step lookup cut to 3",
     href: "https://github.com/roseylikeme/purple-chinese-ext",
     year: "2024",
+    shot: {
+      src: "/shots/chinese-ext.png",
+      alt: "A right-click context menu with a Search Purple Chinese entry added by the extension.",
+      width: 482,
+      height: 322,
+    },
   },
   {
     name: "Salesforce investment records app",
@@ -316,5 +465,65 @@ export const smallerWork: SmallItem[] = [
     note: "Python CLI that reads a PDF's typography and generates the outline its author never added",
     href: "", // TODO(rose): push this to GitHub and add the link.
     year: "2026",
+  },
+];
+
+/** Everything that's still live on the web, for the proof reel under the hero.
+    Screenshots captured from the running sites in October 2026. */
+export type LiveSite = {
+  name: string;
+  href: string;
+  shot: string;
+  alt: string;
+};
+
+export const liveSites: LiveSite[] = [
+  {
+    name: "Poll Worker data table",
+    href: "https://shadcn-ui-table.vercel.app",
+    shot: "/shots/live/poll-worker-table-dark.jpg",
+    alt: "Poll Worker data table in dark mode: filter, column toggle, export, and paginated rows.",
+  },
+  {
+    name: "The Rose Project",
+    href: "https://roseylikeme.github.io/ecommerce-website/",
+    shot: "/shots/live/rose-project.jpg",
+    alt: "The Rose Project storefront: a botanical photo hero with a Click me call to action.",
+  },
+  {
+    name: "ABC Toys",
+    href: "https://roseylikeme.github.io/abc-toys/",
+    shot: "/shots/live/abc-toys.jpg",
+    alt: "ABC Toys homepage: a hero photo and three coloured Products, Location, and Contact cards.",
+  },
+  {
+    name: "Code RARE",
+    href: "https://roseylikeme.github.io/code-rare/",
+    shot: "/shots/live/code-rare-login.jpg",
+    alt: "Code RARE login screen with the round Code RARE logo beside a welcome panel.",
+  },
+  {
+    name: "Northwind Grocery",
+    href: "https://roseylikeme.github.io/northwind-grocery",
+    shot: "/shots/live/northwind-grocery.jpg",
+    alt: "Northwind's grocery site: a basket of vegetables above a row of featured dishes.",
+  },
+  {
+    name: "Stay Organized",
+    href: "https://roseylikeme.github.io/stay-organized",
+    shot: "/shots/live/stay-organized.jpg",
+    alt: "Stay Organized to-do app landing page: a desk photo with a Get started button.",
+  },
+  {
+    name: "CNIT 133 projects",
+    href: "https://roseylikeme.github.io/cnit133/",
+    shot: "/shots/live/cnit133.jpg",
+    alt: "CNIT 133 homework hub: an illustrated header and a table of contents of JavaScript assignments.",
+  },
+  {
+    name: "Arithmetic Calculator",
+    href: "https://roseylikeme.github.io/arithmetic-calculator/",
+    shot: "/shots/live/arithmetic-calculator.jpg",
+    alt: "A pink JavaScript arithmetic calculator with two number fields and four operation buttons.",
   },
 ];
