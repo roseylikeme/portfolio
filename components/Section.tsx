@@ -7,7 +7,7 @@ export function Section({
   className = "",
 }: {
   id: string;
-  eyebrow?: string;
+  eyebrow?: React.ReactNode;
   title?: string;
   lede?: string;
   children: React.ReactNode;
