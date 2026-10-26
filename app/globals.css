@@ -30,20 +30,69 @@
   --accent: #0038a8;
   --accent-fg: #ffffff;
   --ring: #0038a8;
+  /* Flag colours as text. The raw red and yellow are too light to read on
+     cream, so these are darkened until they clear 4.5:1 on every surface. */
+  --text-red: #b83a3a;
+  --text-gold: #8a6510;
+  --text-green: #1f7a4d;
+  --text-violet: #7a3fb8;
+  --grad-a: var(--color-ph-blue);
+  --grad-b: var(--color-ph-red-deep);
+  --grad-c: var(--color-ph-yellow-deep);
+  --glow: color-mix(in oklab, var(--color-ph-blue) 14%, transparent);
+  --shadow: 0 1px 2px rgb(20 20 30 / 0.06), 0 12px 32px -12px rgb(20 20 30 / 0.22);
+  color-scheme: light;
+}
+
+/* Dark tokens, applied two ways: by the toggle (data-theme, set before first
+   paint by the script in layout.tsx), and by the system setting when that
+   script never ran. Every text pair here is >= 4.5:1 on all three surfaces. */
+:root[data-theme="dark"] {
+  --bg: #0e0e11;
+  --bg-raised: #17171b;
+  --bg-sunken: #121215;
+  --fg: #f2f1ef;
+  --fg-muted: #a8a7b0;
+  /* #85848e measured 4.84:1 on raised cards — legal, but thin. */
+  --fg-subtle: #8f8e98;
+  --border: #2a2a31;
+  --accent: #7ba3ff;
+  --accent-fg: #0e0e11;
+  --ring: #7ba3ff;
+  --text-red: #ff8a8a;
+  --text-gold: #fbe792;
+  --text-green: #5fd39a;
+  --text-violet: #c4a5ff;
+  --grad-a: #7ba3ff;
+  --grad-b: var(--color-ph-red);
+  --grad-c: var(--color-ph-yellow);
+  --glow: color-mix(in oklab, #7ba3ff 16%, transparent);
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 16px 40px -12px rgb(0 0 0 / 0.7);
+  color-scheme: dark;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme]) {
     --bg: #0e0e11;
     --bg-raised: #17171b;
     --bg-sunken: #121215;
     --fg: #f2f1ef;
     --fg-muted: #a8a7b0;
-    --fg-subtle: #85848e;
+    --fg-subtle: #8f8e98;
     --border: #2a2a31;
     --accent: #7ba3ff;
     --accent-fg: #0e0e11;
     --ring: #7ba3ff;
+    --text-red: #ff8a8a;
+    --text-gold: #fbe792;
+    --text-green: #5fd39a;
+  --text-violet: #c4a5ff;
+    --grad-a: #7ba3ff;
+    --grad-b: var(--color-ph-red);
+    --grad-c: var(--color-ph-yellow);
+    --glow: color-mix(in oklab, #7ba3ff 16%, transparent);
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 16px 40px -12px rgb(0 0 0 / 0.7);
+    color-scheme: dark;
   }
 }
 
@@ -121,44 +170,44 @@
   .gradient-text {
     background-image: linear-gradient(
       100deg,
-      var(--color-ph-blue),
-      var(--color-ph-red-deep) 60%,
-      var(--color-ph-yellow-deep)
+      var(--grad-a),
+      var(--grad-b) 60%,
+      var(--grad-c)
     );
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
 
-  @media (prefers-color-scheme: dark) {
-    .gradient-text {
-      background-image: linear-gradient(
-        100deg,
-        #7ba3ff,
-        var(--color-ph-red) 60%,
-        var(--color-ph-yellow)
-      );
-    }
-  }
-
   .gradient-band-y {
     background-image: linear-gradient(
       to bottom,
-      var(--color-ph-blue),
+      var(--grad-a),
       var(--color-ph-red) 55%,
       var(--color-ph-yellow)
     );
   }
 
-  @media (prefers-color-scheme: dark) {
-    .gradient-band-y {
-      background-image: linear-gradient(
-        to bottom,
-        #7ba3ff,
-        var(--color-ph-red) 55%,
-        var(--color-ph-yellow)
-      );
-    }
+  .text-red {
+    color: var(--text-red);
+  }
+
+  .text-gold {
+    color: var(--text-gold);
+  }
+
+  .text-green {
+    color: var(--text-green);
+  }
+
+  .shadow-lift {
+    box-shadow: var(--shadow);
+  }
+
+  /* Swap an image per theme — used where a project ships both. */
+  :root[data-theme="dark"] .only-light,
+  :root:not([data-theme="dark"]) .only-dark {
+    display: none;
   }
 
   /* Soft gradient wash behind the hero only, well below text contrast range. */
@@ -197,57 +246,7 @@
   animation: caret-blink 1s step-end infinite;
 }
 
-/* ------------------------------------------------ experience timeline ---- */
-
-/* The rail fills with the signature gradient as you scroll past it, and each
-   role rises in as it enters. Both are scroll-driven, so the section stays a
-   server component: no JS, no hydration, no observer. Browsers without
-   animation-timeline (Firefox, older Safari) never enter the @supports block
-   and get the finished state — filled rail, visible roles — which is a fine
-   place to land. */
-@keyframes xp-fill {
-  to {
-    transform: scaleY(1);
-  }
-}
-
-@keyframes xp-rise {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .xp-fill {
-      transform: scaleY(0);
-      animation-name: xp-fill;
-      animation-duration: auto;
-      animation-timing-function: linear;
-      animation-fill-mode: both;
-      animation-timeline: view();
-      /* Stops short of `cover 100%` so the rail reads as full by the time the
-         last card is on screen, rather than only once it has scrolled off. */
-      animation-range: cover 0% cover 72%;
-    }
-
-    .xp-node {
-      animation-name: xp-rise;
-      animation-duration: auto;
-      animation-timing-function: linear;
-      animation-fill-mode: both;
-      animation-timeline: view();
-      animation-range: entry 10% entry 60%;
-    }
-  }
-}
-
-/* Opening a role fades its bullets in. An earlier attempt animated
+/* Opening a disclosure fades its content in. An earlier attempt animated
    ::details-content's block-size to `auto`, which looked right on paper but
    left content-visibility stuck at `hidden` — the panel never opened at all.
    Animating the revealed content instead is unbreakable: the disclosure is
@@ -263,8 +262,530 @@
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .xp-details[open] > ul {
-    animation: xp-reveal 0.28s ease-out;
+/* --------------------------------------------------------- theme switch ---- */
+
+/* The toggle runs the swap inside a view transition and sets --vt-x/--vt-y to
+   the button's centre, so the new theme grows out of the button as a circle.
+   Under reduced motion the toggle skips the transition entirely. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-new(root) {
+  animation: theme-reveal 0.55s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+@keyframes theme-reveal {
+  from {
+    clip-path: circle(0 at var(--vt-x, 100%) var(--vt-y, 0));
   }
+  to {
+    clip-path: circle(150vmax at var(--vt-x, 100%) var(--vt-y, 0));
+  }
+}
+
+/* ------------------------------------------------------ scroll progress ---- */
+
+/* A thin flag-coloured bar under the nav that fills as you read. Pure CSS —
+   browsers without scroll timelines simply don't show it. */
+.scroll-progress {
+  display: none;
+}
+
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .scroll-progress {
+      display: block;
+      transform-origin: left;
+      transform: scaleX(0);
+      animation: xp-fill-x linear both;
+      animation-timeline: scroll(root block);
+    }
+  }
+}
+
+@keyframes xp-fill-x {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* ----------------------------------------------------------------- hero ---- */
+
+/* Follows the pointer (HeroGlow sets --mx/--my). Decorative only. */
+.hero-spotlight {
+  background: radial-gradient(
+    600px circle at var(--mx, 70%) var(--my, 30%),
+    var(--glow),
+    transparent 60%
+  );
+}
+
+/* Three real screenshots fanned like cards in a hand. Hover or focus within
+   spreads them so each one is readable. */
+.proof-stack > * {
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.proof-stack > :nth-child(1) {
+  transform: translate(-6%, 8%) rotate(-7deg);
+}
+.proof-stack > :nth-child(2) {
+  transform: translate(8%, -6%) rotate(5deg);
+}
+.proof-stack > :nth-child(3) {
+  transform: translate(0, 2%) rotate(-1deg);
+}
+
+@media (hover: hover) {
+  .proof-stack:hover > :nth-child(1),
+  .proof-stack:focus-within > :nth-child(1) {
+    transform: translate(-22%, 14%) rotate(-10deg);
+  }
+  .proof-stack:hover > :nth-child(2),
+  .proof-stack:focus-within > :nth-child(2) {
+    transform: translate(22%, -14%) rotate(8deg);
+  }
+  .proof-stack:hover > :nth-child(3),
+  .proof-stack:focus-within > :nth-child(3) {
+    transform: translate(0, 6%) rotate(0deg) scale(1.04);
+  }
+}
+
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .float {
+    animation: float-y 6s ease-in-out infinite;
+  }
+  .float-delay {
+    animation-delay: -3s;
+  }
+}
+
+/* ----------------------------------------------------------- proof reel ---- */
+
+/* An endless strip of live sites. The track holds the list twice and slides
+   by exactly half its width, so the loop is seamless. Pausable (WCAG 2.2.2),
+   pauses on hover and keyboard focus, and under reduced motion it stops being
+   a marquee and becomes a plain horizontally scrollable row. */
+@keyframes reel {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.reel-track {
+  animation: reel 60s linear infinite;
+}
+
+.reel:hover .reel-track,
+.reel:focus-within .reel-track,
+.reel[data-paused="true"] .reel-track {
+  animation-play-state: paused;
+}
+
+.reel-mask {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 6%,
+    #000 94%,
+    transparent
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reel-track {
+    animation: none;
+  }
+  .reel-mask {
+    overflow-x: auto;
+    mask-image: none;
+  }
+  .reel-dupe,
+  .reel-toggle {
+    display: none;
+  }
+}
+
+/* --------------------------------------------------------------- shared ---- */
+
+/* Cards that lift on hover. Transform only, so nothing reflows. */
+.lift {
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+@media (hover: hover) {
+  .lift:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow);
+    border-color: var(--fg-subtle);
+  }
+}
+
+/* A Simple Icons logo drawn in currentColor, so every mark follows the theme
+   instead of shipping one fixed brand colour that vanishes on one of them. */
+.tool-icon {
+  display: inline-block;
+  flex-shrink: 0;
+  background-color: currentColor;
+  mask: var(--icon) center / contain no-repeat;
+}
+
+/* -------------------------------------------------------------- ambient ---- */
+
+/* A dot grid fading in from the top, plus two slow-drifting colour fields, so
+   long sections have depth instead of a flat fill. */
+.ambient {
+  isolation: isolate;
+  overflow: clip;
+}
+
+.ambient::before,
+.ambient::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.ambient::before {
+  inset: 0;
+  background-image: radial-gradient(
+    color-mix(in oklab, var(--fg) 12%, transparent) 1px,
+    transparent 1px
+  );
+  background-size: 22px 22px;
+  mask-image: linear-gradient(to bottom, #000, transparent 55%);
+}
+
+.ambient::after {
+  inset: -10% -20% auto;
+  height: 900px;
+  background:
+    radial-gradient(40% 40% at 20% 20%, color-mix(in oklab, var(--grad-a) 16%, transparent), transparent 70%),
+    radial-gradient(35% 35% at 85% 40%, color-mix(in oklab, var(--grad-b) 12%, transparent), transparent 70%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ambient::after {
+    animation: drift 24s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes drift {
+  to {
+    transform: translate3d(4%, 6%, 0) scale(1.08);
+  }
+}
+
+/* --------------------------------------------------------------- reveal ---- */
+
+/* Reveal.tsx arms these once JS runs, then sets data-in on scroll. */
+[data-reveal] {
+  transition:
+    opacity 0.7s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+[data-reveal][data-armed]:not([data-in]) {
+  opacity: 0;
+  transform: translateY(28px) scale(0.985);
+}
+
+/* Data graphics play their own entrance on top of the card's. */
+.viz .viz-cell,
+.viz .viz-bar,
+.viz .viz-flip {
+  transition:
+    opacity 0.45s ease,
+    transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1),
+    background-color 0.4s ease;
+  transition-delay: calc(var(--i, 0) * 28ms + 150ms);
+}
+
+.viz[data-armed]:not([data-in]) .viz-cell {
+  opacity: 0;
+  transform: translateY(8px) scale(0.6);
+}
+
+.viz-bar {
+  transform-origin: bottom;
+}
+
+.viz[data-armed]:not([data-in]) .viz-bar {
+  transform: scaleY(0.04);
+}
+
+/* Paper (outline) flipping to digital (filled). */
+.viz[data-armed]:not([data-in]) .viz-flip {
+  background-color: transparent;
+  transform: rotateY(90deg);
+}
+
+/* ----------------------------------------------------------- case study ---- */
+
+.case {
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.case-visual {
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.case-pan {
+  transition: object-position 4s ease-in-out;
+}
+
+@media (hover: hover) {
+  .case:hover {
+    border-color: color-mix(in oklab, var(--lane) 45%, var(--border));
+    box-shadow: var(--shadow);
+  }
+  .case:hover .case-visual {
+    transform: perspective(1400px) rotateX(2.5deg) translateY(-3px);
+  }
+  .case:hover .case-pan {
+    object-position: bottom;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  details[open] .notes {
+    animation: xp-reveal 0.3s ease-out;
+  }
+}
+
+/* ------------------------------------------------------------ skill web ---- */
+
+/* Web vs. list: CSS picks until the visitor does (SkillWeb.tsx sets
+   data-view once they choose). */
+.skills:not([data-view]) .skills-list,
+.skills[data-view="web"] .skills-list,
+.skills[data-view="list"] .skills-web {
+  display: none;
+}
+
+/* Below desktop width the web doesn't fit, so it's the list, whatever was
+   picked before — and no toggle to pick otherwise. */
+@media (max-width: 1279px) {
+  /* .skills.skills matches the specificity of the [data-view] rules above, and coming later, wins — so a pick saved on desktop never hides the list here. */
+  .skills.skills .skills-list {
+    display: block;
+    margin-top: 0;
+  }
+  .skills.skills .skills-web,
+  .skills.skills .skills-tabs {
+    display: none;
+  }
+}
+
+.web-tilt {
+  transform: perspective(1600px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.4s ease-out;
+}
+
+/* Edges: faint in their cluster colour at rest. */
+.web-edge {
+  stroke: var(--c);
+  stroke-width: 1.25;
+  opacity: 0.32;
+  transition:
+    opacity 0.3s ease,
+    stroke-width 0.3s ease;
+}
+
+path.web-core {
+  stroke-width: 2;
+  opacity: 0.45;
+}
+
+.web-bridge {
+  stroke: var(--fg-subtle);
+  stroke-dasharray: 2 2.5;
+  opacity: 0.45;
+}
+
+/* Labels sit on a soft plate so lines passing behind them never cut text. */
+.web-label {
+  background: color-mix(in oklab, var(--bg-sunken) 82%, transparent);
+  color: var(--fg);
+}
+
+.web-node {
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.web-dot {
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
+}
+
+/* Something is active: everything outside its neighbourhood fades back. */
+.web[data-active] .web-node:not([data-lit]) {
+  opacity: 0.22;
+}
+
+.web[data-active] .web-edge:not([data-lit]) {
+  opacity: 0.06;
+}
+
+.web .web-edge[data-lit] {
+  opacity: 0.9;
+  stroke: var(--c);
+  stroke-width: 2;
+}
+
+.web-node[data-lit] .web-dot,
+.web-node:hover .web-dot,
+.web-node:focus-visible .web-dot {
+  border-color: var(--c);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--c) 22%, transparent),
+    0 0 22px color-mix(in oklab, var(--c) 45%, transparent);
+  transform: scale(1.08);
+}
+
+.web-node[aria-pressed="true"] .web-dot,
+.web-hub[aria-pressed="true"] > span {
+  box-shadow: 0 0 0 3px var(--c);
+}
+
+/* A bright dash running the length of every lit edge — the synapse firing. */
+@keyframes synapse {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.web-pulse,
+.web-spark {
+  stroke: var(--c);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 9 91;
+  filter: drop-shadow(0 0 4px var(--c));
+}
+
+.web-pulse {
+  animation: synapse 1.3s linear infinite;
+}
+
+.web-spark {
+  opacity: 0.85;
+  animation: synapse 1.4s ease-in-out forwards;
+}
+
+@keyframes web-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .web-float {
+    animation: web-float 6s ease-in-out infinite;
+    animation-delay: calc(var(--i, 0) * -0.37s);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .web-pulse,
+  .web-spark {
+    display: none;
+  }
+  .web-tilt {
+    transform: none;
+  }
+}
+
+/* Entrance: spokes draw outward from the centre, then the nodes pop in
+   (reusing the .viz-cell stagger from the work graphics). */
+.viz .web-draw {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 0;
+  transition:
+    stroke-dashoffset 1.1s cubic-bezier(0.2, 0.8, 0.2, 1) calc(var(--i, 0) * 40ms),
+    opacity 0.3s ease,
+    stroke-width 0.3s ease;
+}
+
+/* Nodes pop in with a keyframe animation rather than a transition: a
+   transition's stagger delay would also delay the dimming on hover, and a
+   `backwards` fill lets go of opacity once it's done so dimming still works. */
+@keyframes web-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+
+.viz[data-armed]:not([data-in]) .web-pop {
+  opacity: 0;
+}
+
+.viz[data-armed][data-in] .web-pop {
+  animation: web-pop 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+  animation-delay: calc(var(--i, 0) * 22ms + 250ms);
+}
+
+.viz[data-armed]:not([data-in]) .web-draw {
+  stroke-dashoffset: 100;
+}
+
+.viz[data-armed]:not([data-in]) .web-bridge {
+  opacity: 0;
+}
+
+/* A highlighter stroke under the phrase that matters in a quote. Text keeps
+   its own colour, so contrast is whatever the quote already passes. */
+.quote-mark {
+  background: linear-gradient(
+      color-mix(in oklab, var(--text-red) 32%, transparent),
+      color-mix(in oklab, var(--text-red) 32%, transparent)
+    )
+    0 85% / 100% 0.45em no-repeat;
+  color: inherit;
+  padding: 0 0.08em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* The active carousel dot filling until the next screenshot. */
+@keyframes shot-progress {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.shot-progress {
+  animation: shot-progress linear forwards;
 }
