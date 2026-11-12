@@ -48,9 +48,13 @@ export type Visual =
 export type WorkItem = {
   slug: string;
   name: string;
-  /** The job, program, or context this came out of. */
-  where: string;
+  /** The org or context this came out of, kept short: it shares a row with the date. */
+  org: string;
+  /** What I was there, in plain words. Sits under the title. */
+  role?: string;
   period: string;
+  /** A live version that loads in place of the screenshot on request. */
+  embed?: { kind: "tableau"; name: string };
   visual: Visual;
   /** One line, on the card face. Everything longer lives behind the disclosure. */
   tagline: string;
@@ -87,8 +91,9 @@ export const lanes: Lane[] = [
       {
         slug: "resume-fit-assistant",
         name: "Resume Fit Assistant",
-        where: "Solo — product and engineering",
-        period: "2026 — ongoing",
+        org: "Personal project",
+        role: "Product and engineering, solo",
+        period: "2026 – now",
         tagline:
           "A job-search pipeline: it scores every posting against your résumés, autofills applications from a Chrome extension, and tracks each one from inbox to offer.",
         visual: {
@@ -150,8 +155,9 @@ export const lanes: Lane[] = [
       {
         slug: "sjsu-app-registry",
         name: "SJSU Application Registry",
-        where: "San José State University IT — Technical Lead Consultant",
-        period: "Aug 2026 — ongoing",
+        org: "SJSU IT · Consulting",
+        role: "Technical Lead Consultant",
+        period: "Aug 2026 – now",
         tagline:
           "One trustworthy inventory of the university's SaaS and in-house apps: who owns each one, how sensitive it is, how it recovers, and which ones need attention now.",
         visual: {
@@ -213,8 +219,9 @@ export const lanes: Lane[] = [
       {
         slug: "poll-worker-table",
         name: "Poll Worker System data table",
-        where: "Alameda County — Technical Specialist",
-        period: "Jan — Mar 2024",
+        org: "Alameda County",
+        role: "Technical Specialist",
+        period: "Jan – Mar 2024",
         tagline:
           "A reusable data table for the poll-worker system I used every day at my county job — rebuilt because the original was painful to work in.",
         visual: {
@@ -265,7 +272,8 @@ export const lanes: Lane[] = [
       {
         slug: "fed-exec-summaries",
         name: "Deck-to-executive-summary automation",
-        where: "Federal Reserve Bank of San Francisco",
+        org: "Federal Reserve Bank of SF",
+        role: "AI Builder and Automation Ops Intern",
         period: "2026",
         tagline:
           "A hybrid generative-AI and Excel VBA tool that turns Steering Committee decks into strictly formatted executive email summaries.",
@@ -296,7 +304,8 @@ export const lanes: Lane[] = [
       {
         slug: "n8n-expense-claims",
         name: "Expense claim automation",
-        where: "Personal — n8n Cloud",
+        org: "Personal project",
+        role: "Built on n8n Cloud",
         period: "2026",
         tagline:
           "A 5-node n8n workflow that takes expense claims from a web form, logs every one to Google Sheets, auto-approves anything under $25, and routes the rest to accounting — emailing everyone along the way.",
@@ -333,7 +342,8 @@ export const lanes: Lane[] = [
       {
         slug: "tableau-happiness",
         name: "Happiness, GDP, Freedom, and Health",
-        where: "Tableau Public — data story",
+        org: "Tableau Public",
+        role: "Data story",
         period: "2026",
         tagline:
           "A five-part Tableau story asking what actually moves a country's happiness score: money, or freedom, social support, generosity, and health.",
@@ -353,20 +363,19 @@ export const lanes: Lane[] = [
             },
           ],
         },
-        metrics: [
-          { value: "5", label: "story chapters" },
-          { value: "10 yrs", label: "of country data" },
+        highlights: [
+          { title: "Overview", body: "Happiness scores for every country, 2015 to 2024." },
+          { title: "Money", body: "GDP per capita set against happiness score: it helps, but it isn't the whole story." },
+          { title: "Extremes", body: "The ten happiest and ten least happy countries, broken out factor by factor." },
+          { title: "Inferences", body: "What actually moves the score, once money is held up against the rest." },
         ],
         results: ["Most vs. least happy countries", "Published on Tableau Public"],
         featured: true,
+        embed: { kind: "tableau", name: "MyFinalProjectRose_17879556433010/Story1" },
         notes: [
           {
             label: "Question",
             body: "Does GDP explain why some countries are happier than others — or do freedom, social support, generosity, and healthy life expectancy matter more?",
-          },
-          {
-            label: "Approach",
-            body: "Built it as a story rather than a dashboard: an overview, GDP per capita against happiness score, then the most- and least-happy countries broken out factor by factor across a decade, ending on the inferences.",
           },
         ],
         stack: ["Tableau", "Data storytelling", "Dual-axis charts"],
@@ -381,7 +390,8 @@ export const lanes: Lane[] = [
       {
         slug: "alameda-knowledge-base",
         name: "The knowledge base that stopped the calls",
-        where: "Alameda County — Technical Specialist",
+        org: "Alameda County",
+        role: "Technical Specialist",
         period: "2024",
         tagline:
           "Analyzed what people were actually calling about, then removed the reason to call.",
@@ -405,8 +415,9 @@ export const lanes: Lane[] = [
       {
         slug: "ucdavis-contract-migration",
         name: "5,000 contracts off paper",
-        where: "UC Davis Health — Systems Support & Contracts",
-        period: "2021 — 2022",
+        org: "UC Davis Health",
+        role: "Systems Support and Contracts",
+        period: "2021 – 2022",
         tagline:
           "A paper-to-database migration that had to survive an audit, run by the person whose title said nothing about systems.",
         visual: {

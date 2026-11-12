@@ -4,6 +4,7 @@ import { CopyEmail } from "@/components/CopyEmail";
 import { CountUp } from "@/components/CountUp";
 import { CurrentMonth } from "@/components/CurrentMonth";
 import { HeroGlow } from "@/components/HeroGlow";
+import { LiveEmbed } from "@/components/LiveEmbed";
 import { Nav } from "@/components/Nav";
 import { ProofReel } from "@/components/ProofReel";
 import { Reveal } from "@/components/Reveal";
@@ -752,7 +753,13 @@ function CaseStudy({ item }: { item: WorkItem }) {
         }`}
       >
         <div className="case-visual p-3 sm:p-4">
-          <Visual visual={item.visual} featured={item.featured} />
+          {item.embed ? (
+            <LiveEmbed name={item.embed.name} title={item.name}>
+              <Visual visual={item.visual} featured={item.featured} />
+            </LiveEmbed>
+          ) : (
+            <Visual visual={item.visual} featured={item.featured} />
+          )}
         </div>
 
         <div className={`px-5 pb-6 sm:px-7 ${item.featured ? "pt-2 sm:pb-7" : "pt-2 md:py-6 md:pl-2"}`}>
@@ -766,12 +773,20 @@ function CaseStudy({ item }: { item: WorkItem }) {
             }
           >
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-subtle">
-                {item.where} · {item.period}
-              </p>
-              <h4 className="mt-2 font-display text-2xl font-bold leading-tight">
+              {/* Where and when on one quiet row; what I was there sits under the title. */}
+              <div className="flex items-center justify-between gap-3">
+                <p className="flex min-w-0 items-center gap-2 text-xs font-semibold text-[var(--lane)]">
+                  <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-[var(--lane)]" />
+                  <span className="truncate">{item.org}</span>
+                </p>
+                <p className="shrink-0 rounded-full border border-[var(--border)] px-2.5 py-0.5 text-[11px] text-subtle">
+                  {item.period}
+                </p>
+              </div>
+              <h4 className="mt-2.5 font-display text-2xl font-bold leading-tight">
                 {item.name}
               </h4>
+              {item.role && <p className="mt-1 text-sm text-subtle">{item.role}</p>}
               <p className="mt-2.5 text-sm leading-relaxed text-muted">
                 {item.tagline}
               </p>
