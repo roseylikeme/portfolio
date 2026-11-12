@@ -56,6 +56,9 @@ export type WorkItem = {
   tagline: string;
   /** The numbers, set large. These carry the card at a skim. */
   metrics?: { value: string; label: string }[];
+  /** How it works, as 3–4 short steps. Takes the place of metrics on a
+      featured card when the honest story is what it does, not a count. */
+  highlights?: { title: string; body: string }[];
   /** Short qualitative chips. */
   results: string[];
   featured?: boolean;
@@ -96,17 +99,25 @@ export const lanes: Lane[] = [
           height: 1290,
           url: "resume-fit-assistant/dashboard",
         },
-        metrics: [
-          { value: "549", label: "commits" },
-          { value: "280", label: "test files" },
-          { value: "8", label: "pipeline stages" },
+        highlights: [
+          {
+            title: "Capture",
+            body: "The Chrome extension saves postings from Greenhouse, Lever, Workday, and other ATS sites.",
+          },
+          {
+            title: "Score",
+            body: "Every résumé is checked against the job, with evidence for each requirement and the keywords it's missing.",
+          },
+          {
+            title: "Apply",
+            body: "One click autofills the form from my profile and a saved answer bank. It never submits for me.",
+          },
+          {
+            title: "Track",
+            body: "Gmail sync moves each job from applied to interview to offer, and flags the follow-ups that are due.",
+          },
         ],
-        results: [
-          "Capture → score → autofill → track",
-          "Web app + Chrome extension",
-          "Gmail-synced pipeline",
-          "Never invents experience",
-        ],
+        results: ["Web app + Chrome extension", "Never invents experience"],
         featured: true,
         notes: [
           {
@@ -165,17 +176,25 @@ export const lanes: Lane[] = [
             },
           ],
         },
-        metrics: [
-          { value: "3", label: "rules that flag an app for attention" },
-          { value: "4", label: "access roles, scoped by department" },
-          { value: "5,000", label: "rows per Excel import, diffed field by field" },
+        highlights: [
+          {
+            title: "Inventory",
+            body: "Every SaaS and in-house app in one record: owner, audience, hosting, and how it recovers.",
+          },
+          {
+            title: "Classify",
+            body: "Sorted by data sensitivity, business criticality, lifecycle status, and department.",
+          },
+          {
+            title: "Flag",
+            body: "An attention queue surfaces apps that are due for review, critical to recovery, or missing data.",
+          },
+          {
+            title: "Control",
+            body: "Department-scoped roles, campus single sign-on, and an audit trail of every change.",
+          },
         ],
-        results: [
-          "Consulting engagement",
-          "Role-based access + SSO",
-          "Attention queue",
-          "Audit changelog",
-        ],
+        results: ["Consulting engagement", "University IT"],
         featured: true,
         notes: [],
         stack: [
@@ -207,10 +226,19 @@ export const lanes: Lane[] = [
           width: 1440,
           height: 900,
         },
-        metrics: [
-          { value: "1,000", label: "records, instantly filterable" },
-          { value: "5", label: "controls: filter · sort · page · hide · select" },
-          { value: "1-click", label: "export to Excel" },
+        highlights: [
+          {
+            title: "Find",
+            body: "Filter the roster by name as you type, instead of paging through it.",
+          },
+          {
+            title: "Shape",
+            body: "Sort any column, change the page size, and hide the columns you don't need.",
+          },
+          {
+            title: "Act",
+            body: "Select the rows you want and export them straight to Excel.",
+          },
         ],
         results: ["Live demo", "Light + dark mode", "Built for a system I used daily"],
         featured: true,

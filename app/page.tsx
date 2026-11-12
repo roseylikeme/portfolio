@@ -248,7 +248,7 @@ function ProofStack() {
         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-subtle">
           Resume Fit Assistant
         </p>
-        <p className="font-display text-lg font-bold">549 commits</p>
+        <p className="font-display text-lg font-bold">Capture → score → track</p>
       </div>
       <div
         aria-hidden="true"
@@ -758,7 +758,13 @@ function CaseStudy({ item }: { item: WorkItem }) {
         <div className={`px-5 pb-6 sm:px-7 ${item.featured ? "pt-2 sm:pb-7" : "pt-2 md:py-6 md:pl-2"}`}>
           {/* Featured cards keep a right column for the numbers — only when
               there are numbers to put in it. */}
-          <div className={item.featured && item.metrics ? "md:grid md:grid-cols-[1.35fr_1fr] md:gap-8" : ""}>
+          <div
+            className={
+              item.featured && (item.highlights || item.metrics)
+                ? "md:grid md:grid-cols-[1.2fr_1fr] md:gap-10"
+                : ""
+            }
+          >
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-subtle">
                 {item.where} · {item.period}
@@ -781,7 +787,30 @@ function CaseStudy({ item }: { item: WorkItem }) {
               </ul>
             </div>
 
-            {item.metrics && (
+            {item.highlights ? (
+              // How it works, as a short numbered flow: what the thing actually
+              // does, step by step, instead of numbers that need a footnote.
+              <ol className="relative mt-6 space-y-4 md:mt-0">
+                <span
+                  aria-hidden="true"
+                  className="absolute bottom-3 left-[11px] top-3 w-px bg-[color-mix(in_oklab,var(--lane)_35%,transparent)]"
+                />
+                {item.highlights.map((h, i) => (
+                  <li key={h.title} className="relative flex gap-3.5">
+                    <span
+                      aria-hidden="true"
+                      className="relative z-10 grid size-6 shrink-0 place-items-center rounded-full border border-[color-mix(in_oklab,var(--lane)_55%,transparent)] bg-[var(--bg-raised)] font-mono text-[10px] font-semibold text-[var(--lane)]"
+                    >
+                      {i + 1}
+                    </span>
+                    <p className="text-sm leading-snug text-muted">
+                      <span className="font-semibold text-[var(--fg)]">{h.title}.</span>{" "}
+                      {h.body}
+                    </p>
+                  </li>
+                ))}
+              </ol>
+            ) : item.metrics && (
               <dl
                 className={`mt-5 grid gap-x-5 gap-y-3 ${
                   item.featured ? "grid-cols-3 md:mt-0 md:grid-cols-1 md:content-start" : "grid-cols-2"

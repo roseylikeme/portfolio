@@ -44,7 +44,7 @@ export const toolbox: ToolGroup[] = [
       { id: "postgres", name: "Postgres + Prisma", at: "Resume Fit", icon: "postgresql" },
       { id: "mongo", name: "MongoDB", at: "Code RARE", icon: "mongodb" },
       { id: "chrome", name: "Chrome extensions", at: "Resume Fit, Purple Culture", icon: "googlechrome" },
-      { id: "vitest", name: "Vitest", at: "280 test files", icon: "vitest" },
+      { id: "vitest", name: "Vitest", at: "Resume Fit test suite", icon: "vitest" },
       { id: "github", name: "Git + GitHub", at: "Everything", icon: "github" },
     ],
   },
